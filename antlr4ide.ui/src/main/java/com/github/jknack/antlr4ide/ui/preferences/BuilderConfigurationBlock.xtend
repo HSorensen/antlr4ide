@@ -141,6 +141,7 @@ class BuilderConfigurationBlock extends OptionsConfigurationBlock {
     addTextField(othersComposite, "", ToolOptions.VM_ARGS, 0, 360)
 
     registerKey(OptionsConfigurationBlock.IS_PROJECT_SPECIFIC)
+//    registerKey(OptionsConfigurationBlock.isProjectSpecificPropertyKey(getPropertyPrefix()))
     val section = Activator.^default.dialogSettings.getSection(SETTINGS_SECTION_NAME)
     restoreSectionExpansionStates(section)
     return pageContent
@@ -304,75 +305,75 @@ class BuilderConfigurationBlock extends OptionsConfigurationBlock {
  *       at org.eclipse.jface.preference.PreferenceDialog$13.run(PreferenceDialog.java:1289)
  * 
  */
-  public def String getPropertyPrefix() {
+  def String getPropertyPrefix() {
     if(DEBUG) System::out.println("BuilderConfigurationBlock getPropertyPrefix ")
     //languageName=com.github.jknack.antlr4ide.Antlr4 ?
     return "antlr4ide"
   }
 
 
-  override hasProjectSpecificOptions(IProject project) {
-          if(DEBUG) System::out.println("BuilderConfigurationBlock hasProjectSpecificOptions project>"+project+"< getProject>"+getProject()+"<")
-          
-          /*
-           * HACK HACK HACK HACK HACK
-           * 
-           * Avoid NPE: 
-           * java.lang.NullPointerException
-           *     at org.eclipse.xtext.ui.preferences.OptionsConfigurationBlock.hasProjectSpecificOptions(OptionsConfigurationBlock.java:237)
-           *     at com.github.jknack.antlr4ide.ui.preferences.BuilderPreferencePage.hasProjectSpecificOptions(BuilderPreferencePage.java:95)
-           *     at org.eclipse.xtext.ui.preferences.PropertyAndPreferencePage.doLinkActivated(PropertyAndPreferencePage.java:213)
-           *     at org.eclipse.xtext.ui.preferences.PropertyAndPreferencePage$2.widgetSelected(PropertyAndPreferencePage.java:177)
-           * 
-           * Looked at the source: 
-           * https://github.com/eclipse/xtext/blob/master/plugins/org.eclipse.xtext.ui/src/org/eclipse/xtext/ui/preferences/OptionsConfigurationBlock.java
-           * 
-           * And reverse-guessed-engineered from the source code:
-           * 
-           *    public boolean hasProjectSpecificOptions(IProject project) {
-           *     IPreferenceStore ps = preferenceStore;
-           *     if (project != getProject()) {
-           *         ps = preferenceStoreAccessImpl.getWritablePreferenceStore(project);
-           *     }
-           *     // backward compatibility
-           *     boolean oldSettingsUsed = ps.getBoolean(IS_PROJECT_SPECIFIC);
-           *     boolean newSettingsValue = ps.getBoolean(getIsProjectSpecificPropertyKey(getPropertyPrefix()));
-           *     if (oldSettingsUsed) {
-           *         if (!newSettingsValue) {
-           *             ps.setValue(getIsProjectSpecificPropertyKey(getPropertyPrefix()), true);
-           *             return true;
-           *         }
-           *     }
-           *     return newSettingsValue;
-           *     }
-           * 
-           *    public String getIsProjectSpecificPropertyKey(String propertyPrefix) {
-           *         String key = IS_PROJECT_SPECIFIC;
-           *         if (propertyPrefix != null) {
-           *             key = isProjectSpecificPropertyKey(propertyPrefix);
-           *         } else {
-           *             logError("Project specific key is not qualified", null);
-           *         }
-           *         return key;
-           *     }
-           *
-           *     public static String isProjectSpecificPropertyKey(String propertyPrefix) {
-           *         return propertyPrefix + "." + IS_PROJECT_SPECIFIC;
-           *     }
-           * 
-           */
-          
-        val oldSettingsUsed  = preferenceStore.getBoolean("is_project_specific") // HACK: IS_PROJECT_SPECIFIC
-        val newSettingsValue = preferenceStore.getBoolean(getPropertyPrefix()+"."+"is_project_specific")
-
-        if (oldSettingsUsed) {
-            if (!newSettingsValue) {
-                preferenceStore.setValue(getPropertyPrefix()+"."+"is_project_specific", true)
-                return true
-            }
-        }
-        return newSettingsValue
-    }
+//  override hasProjectSpecificOptions(IProject project) {
+//          if(DEBUG) System::out.println("BuilderConfigurationBlock hasProjectSpecificOptions project>"+project+"< getProject>"+getProject()+"<")
+//          
+//          /*
+//           * HACK HACK HACK HACK HACK
+//           * 
+//           * Avoid NPE: 
+//           * java.lang.NullPointerException
+//           *     at org.eclipse.xtext.ui.preferences.OptionsConfigurationBlock.hasProjectSpecificOptions(OptionsConfigurationBlock.java:237)
+//           *     at com.github.jknack.antlr4ide.ui.preferences.BuilderPreferencePage.hasProjectSpecificOptions(BuilderPreferencePage.java:95)
+//           *     at org.eclipse.xtext.ui.preferences.PropertyAndPreferencePage.doLinkActivated(PropertyAndPreferencePage.java:213)
+//           *     at org.eclipse.xtext.ui.preferences.PropertyAndPreferencePage$2.widgetSelected(PropertyAndPreferencePage.java:177)
+//           * 
+//           * Looked at the source: 
+//           * https://github.com/eclipse/xtext/blob/master/plugins/org.eclipse.xtext.ui/src/org/eclipse/xtext/ui/preferences/OptionsConfigurationBlock.java
+//           * 
+//           * And reverse-guessed-engineered from the source code:
+//           * 
+//           *    public boolean hasProjectSpecificOptions(IProject project) {
+//           *     IPreferenceStore ps = preferenceStore;
+//           *     if (project != getProject()) {
+//           *         ps = preferenceStoreAccessImpl.getWritablePreferenceStore(project);
+//           *     }
+//           *     // backward compatibility
+//           *     boolean oldSettingsUsed = ps.getBoolean(IS_PROJECT_SPECIFIC);
+//           *     boolean newSettingsValue = ps.getBoolean(getIsProjectSpecificPropertyKey(getPropertyPrefix()));
+//           *     if (oldSettingsUsed) {
+//           *         if (!newSettingsValue) {
+//           *             ps.setValue(getIsProjectSpecificPropertyKey(getPropertyPrefix()), true);
+//           *             return true;
+//           *         }
+//           *     }
+//           *     return newSettingsValue;
+//           *     }
+//           * 
+//           *    public String getIsProjectSpecificPropertyKey(String propertyPrefix) {
+//           *         String key = IS_PROJECT_SPECIFIC;
+//           *         if (propertyPrefix != null) {
+//           *             key = isProjectSpecificPropertyKey(propertyPrefix);
+//           *         } else {
+//           *             logError("Project specific key is not qualified", null);
+//           *         }
+//           *         return key;
+//           *     }
+//           *
+//           *     public static String isProjectSpecificPropertyKey(String propertyPrefix) {
+//           *         return propertyPrefix + "." + IS_PROJECT_SPECIFIC;
+//           *     }
+//           * 
+//           */
+//          
+//        val oldSettingsUsed  = preferenceStore.getBoolean("is_project_specific") // HACK: IS_PROJECT_SPECIFIC
+//        val newSettingsValue = preferenceStore.getBoolean(getPropertyPrefix()+"."+"is_project_specific")
+//
+//        if (oldSettingsUsed) {
+//            if (!newSettingsValue) {
+//                preferenceStore.setValue(getPropertyPrefix()+"."+"is_project_specific", true)
+//                return true
+//            }
+//        }
+//        return newSettingsValue
+//    }
 
 
 
