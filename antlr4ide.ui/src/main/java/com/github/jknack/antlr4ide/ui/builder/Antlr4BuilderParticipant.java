@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import org.eclipse.xtext.builder.IXtextBuilderParticipant.IBuildContext;
+import org.eclipse.xtext.resource.IResourceDescription.Delta;
 import org.eclipse.emf.ecore.resource.Resource;
 import com.github.jknack.antlr4ide.lang.Grammar;
 import com.github.jknack.antlr4ide.lang.GrammarType;
@@ -15,7 +15,7 @@ import org.eclipse.xtext.xbase.lib.IterableExtensions;
 
 public class Antlr4BuilderParticipant extends org.eclipse.xtext.builder.BuilderParticipant {
 
-	static boolean DEBUG=false;
+	static boolean DEBUG=true;
 	
 	/**
 	 * Build dependency strategy
@@ -29,20 +29,23 @@ public class Antlr4BuilderParticipant extends org.eclipse.xtext.builder.BuilderP
 	 * 
 	 */
 	@Override
-	protected List<org.eclipse.xtext.resource.IResourceDescription.Delta> 
-	          getRelevantDeltas(org.eclipse.xtext.builder.IXtextBuilderParticipant.IBuildContext context) 
+	protected List<Delta> 
+	          getRelevantDeltas(IBuildContext context) 
 	{
-		List<org.eclipse.xtext.resource.IResourceDescription.Delta> result = super.getRelevantDeltas(context);
+		if(DEBUG)
+		System.out.println(">>> Antlr4BuilderParticipant getRelevantDeltas "+context.getClass());
+
+		List<Delta> result = super.getRelevantDeltas(context);
 		if (result.size()<=1) return result; // no need to sort just one entry
 		
-		List<org.eclipse.xtext.resource.IResourceDescription.Delta> resultLexers  = new ArrayList(); 
-		List<org.eclipse.xtext.resource.IResourceDescription.Delta> resultParsers = new ArrayList(); 
-		List<org.eclipse.xtext.resource.IResourceDescription.Delta> resultOthers  = new ArrayList();
+		List<Delta> resultLexers  = new ArrayList<Delta>(); 
+		List<Delta> resultParsers = new ArrayList<Delta>(); 
+		List<Delta> resultOthers  = new ArrayList<Delta>();
 
-		List<org.eclipse.xtext.resource.IResourceDescription.Delta> resultFinal  = new ArrayList();
+		List<Delta> resultFinal  = new ArrayList<Delta>();
 		
 		int i=0;
-		for (org.eclipse.xtext.resource.IResourceDescription.Delta delta : result) {
+		for (Delta delta : result) {
 			Resource resource = context.getResourceSet().getResource(delta.getUri(), true);
 			Grammar grammar = grammarFromResource(resource);
 			if(DEBUG)
@@ -60,7 +63,7 @@ public class Antlr4BuilderParticipant extends org.eclipse.xtext.builder.BuilderP
 		}
 		
 		
-		Comparator compareUri = new CompareUri() ;
+		Comparator<Delta> compareUri = new CompareUri() ;
 		
 		Collections.sort(resultLexers, compareUri);
 		Collections.sort(resultParsers, compareUri);
@@ -72,7 +75,7 @@ public class Antlr4BuilderParticipant extends org.eclipse.xtext.builder.BuilderP
 		
 		if(DEBUG) {
 		  i=0;
-		  for (org.eclipse.xtext.resource.IResourceDescription.Delta delta : resultFinal) {
+		  for (Delta delta : resultFinal) {
   			System.out.println("++> Antlr4BuilderParticipant getRelevantDeltas ["+i+"]>"+delta.getUri()+"<");
 			i++;
 	  	  }
@@ -94,9 +97,9 @@ public class Antlr4BuilderParticipant extends org.eclipse.xtext.builder.BuilderP
 	/**
 	 * Compare two resource URIs as strings.
 	 */
-	private class CompareUri implements Comparator<org.eclipse.xtext.resource.IResourceDescription.Delta> {
-	    public int compare(org.eclipse.xtext.resource.IResourceDescription.Delta delta1
-			             , org.eclipse.xtext.resource.IResourceDescription.Delta delta2)
+	private class CompareUri implements Comparator<Delta> {
+	    public int compare(Delta delta1
+			             , Delta delta2)
 	    {
 	    	return delta1.getUri().toString().compareTo(delta2.getUri().toString());
 	    }
