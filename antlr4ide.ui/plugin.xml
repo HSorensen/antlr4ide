@@ -467,5 +467,21 @@
               </and>  
             </enablement>
         </decorator>
-    </extension> 
+  </extension>
+  <extension point="org.eclipse.ui.preferencePages">
+          <!-- experimenting with new native eclipse pref pages -->
+        <page
+            class="com.github.jknack.antlr4ide.ui.preferences.AntlrToolPreferencePage"
+            id="com.github.jknack.antlr4ide.Antlr4.newprefs"
+            name="AntLr Tool">
+            <keywordReference id="com.github.jknack.antlr4ide.ui.keyword_Antlr4"/>
+        </page>    
+        <page
+            class="com.github.jknack.antlr4ide.ui.preferences.AntlrFoldingPreferencePage"
+            id="com.github.jknack.antlr4ide.Antlr4.newprefs.folding"
+            name="Folding"
+            category="com.github.jknack.antlr4ide.Antlr4.newprefs">
+            <keywordReference id="com.github.jknack.antlr4ide.ui.keyword_Antlr4"/>
+        </page>    
+  </extension>
 </plugin>
