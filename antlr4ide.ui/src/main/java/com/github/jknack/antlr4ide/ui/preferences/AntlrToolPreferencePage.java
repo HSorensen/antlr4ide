@@ -1,11 +1,17 @@
 package com.github.jknack.antlr4ide.ui.preferences;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.jar.Attributes;
+import java.util.jar.JarInputStream;
+
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -83,20 +89,59 @@ public class AntlrToolPreferencePage extends FieldEditorPreferencePage implement
 
 		@Override
 		protected String getNewInputObject() {
-			// TODO: Add popup prompting for tool-jar
+			FileDialog fd=new FileDialog(getFieldEditorParent().getShell(),SWT.OPEN);
 			
-			return "v4.5.3 ./tooljar/antlr4.jar";
+			String [] filterNames = new String [] {"JAR Files"};
+			String [] filterExtensions = new String [] {"*.jar"};
+			fd.setFilterExtensions(filterExtensions);
+			fd.setFilterNames(filterNames);
+			fd.setFileName ("antlr*.jar");
+			fd.setText("Select Antlr tool jar");
+			
+			String toolJarName=fd.open();
+			
+			// TODO open Manifest and extract tool version
+
+			StringBuffer out=new StringBuffer();
+			boolean isOk=verifyTooljar(toolJarName,out);
+			if(isOk) return out.toString();
+			
+			
+			return null;
 		}
 
 		@Override
 		protected String[] parseString(String stringList) {
 //			Exception ex=new Exception();
 //			ex.printStackTrace();
-			
-			
 			return stringList.split(del);
 		}
 		
+		
+		private boolean verifyTooljar(String jarfilename, StringBuffer out)  {
+			File f=new File(jarfilename);
+			String TOOL = "org.antlr.v4.Tool"; // from ToolOptionsProvider.xtend
+			try {
+				JarInputStream jarjar = new JarInputStream(new FileInputStream(f));
+				Attributes attributes=jarjar.getManifest().getMainAttributes();
+				
+				String version = (String) attributes.get(new Attributes.Name("Implementation-Version"));
+				String mainClass = (String) attributes.get(new Attributes.Name("Main-Class"));
+				jarjar.close();
+
+				if(mainClass.equals(TOOL)) {
+				   out.append(version);
+ 				   out.append(" ");
+				   out.append(f.getAbsolutePath());
+ 				   return true;
+				}
+			} catch (Exception e) {
+				System.out.println("Exception caught, but otherwise ignored.");
+				e.printStackTrace();
+			}
+			
+			return false;
+		}
 	}
 
 }
