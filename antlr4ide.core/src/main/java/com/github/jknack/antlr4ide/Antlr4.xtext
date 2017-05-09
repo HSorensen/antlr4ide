@@ -42,6 +42,9 @@ PrequelConstruct
       // {tree} parser.
       Tokens
 
+    | // Support for defining custom channels in a lexer grammar.
+      Channels
+
     | // A declaration of language target implemented constructs. All such
       // action sections start with '@' and are given to the language target's
       // StringTemplate group. For instance @parser::header and @lexer::header
@@ -139,6 +142,25 @@ V3Token
   :
     id=Id ('=' value=STRING)? ';'
   ;
+  
+  
+/** Channels */
+Channels
+  :
+    V4Channels
+  ;
+
+V4Channels
+  :
+    keyword=CHANNELS_SPEC channels+=V4Channel (',' channels+=V4Channel)* '}'
+  ;
+
+V4Channel
+  :
+    name=Id
+  ;
+
+  
 
 /** Grammar Actions */
 GrammarAction
@@ -528,6 +550,14 @@ TOKENS_SPEC
   :
   'tokens' WSNLCHARS* '{'
   ;
+
+/** Channels */
+terminal
+CHANNELS_SPEC
+  :
+  'channels' WSNLCHARS* '{'
+  ;
+
 
 /** IDS */
 terminal

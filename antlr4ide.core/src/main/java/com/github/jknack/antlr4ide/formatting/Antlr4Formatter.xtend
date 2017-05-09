@@ -33,6 +33,8 @@ class Antlr4Formatter extends AbstractDeclarativeFormatter {
 
     tokens(c)
 
+    channels(c)
+
     actions(c)
 
     imports(c)
@@ -231,6 +233,31 @@ class Antlr4Formatter extends AbstractDeclarativeFormatter {
     c.setLinewrap.before(g.v4TokensAccess.rightCurlyBracketKeyword_3)
     c.setLinewrap(2).after(g.v4TokensAccess.rightCurlyBracketKeyword_3)
   }
+
+
+  /**
+   * Configure channels formatting.
+   *
+   * @param c formatter configuration
+   */
+  protected def channels(FormattingConfig c) {
+    // channels {
+    c.setLinewrap.before(g.v4ChannelsAccess.keywordCHANNELS_SPECTerminalRuleCall_0_0)
+    c.setLinewrap.after(g.v4ChannelsAccess.keywordCHANNELS_SPECTerminalRuleCall_0_0)
+
+    // channels {}
+    c.setIndentation(g.v4ChannelsAccess.keywordCHANNELS_SPECTerminalRuleCall_0_0,
+      g.v4ChannelsAccess.rightCurlyBracketKeyword_3)
+
+    // ','
+    c.setLinewrap.after(g.v4ChannelsAccess.commaKeyword_2_0)
+    c.setNoSpace.before(g.v4ChannelsAccess.commaKeyword_2_0)
+
+    // }
+    c.setLinewrap.before(g.v4ChannelsAccess.rightCurlyBracketKeyword_3)
+    c.setLinewrap(2).after(g.v4ChannelsAccess.rightCurlyBracketKeyword_3)
+  }
+
 
   /**
    * Configure options formatting.

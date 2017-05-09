@@ -14,6 +14,8 @@ import com.github.jknack.antlr4ide.lang.Imports
 import com.github.jknack.antlr4ide.lang.Options
 import com.github.jknack.antlr4ide.lang.LexerRule
 import com.github.jknack.antlr4ide.lang.RuleAction
+import com.github.jknack.antlr4ide.lang.V4Channels
+import com.github.jknack.antlr4ide.lang.V4Channel
 import com.github.jknack.antlr4ide.lang.V4Tokens
 import com.github.jknack.antlr4ide.lang.V4Token
 import com.github.jknack.antlr4ide.lang.V3Tokens
@@ -270,6 +272,18 @@ class AntlrHighlightingCalculator implements ISemanticHighlightingCalculator {
 
   def dispatch void highlight(IHighlightedPositionAcceptor acceptor, V3Token object) {
     highlightObjectAtFeature(acceptor, object, "id", TOKEN)
+  }
+
+  def dispatch void highlight(IHighlightedPositionAcceptor acceptor, V4Channels object) {
+    highlightObjectAtFeature(acceptor, object, "keyword", KEYWORD_ID, keyword("channels"))
+    
+    for (channel : object.channels) {
+      highlight(acceptor, channel)
+    }
+  }
+  
+    def dispatch void highlight(IHighlightedPositionAcceptor acceptor, V4Channel object) {
+    highlightObjectAtFeature(acceptor, object, "name", TOKEN)
   }
 
   def dispatch void highlight(IHighlightedPositionAcceptor acceptor, Mode mode) {

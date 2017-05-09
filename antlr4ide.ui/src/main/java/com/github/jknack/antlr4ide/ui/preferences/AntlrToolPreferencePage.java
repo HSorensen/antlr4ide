@@ -58,7 +58,7 @@ public class AntlrToolPreferencePage extends FieldEditorPreferencePage implement
 		
 		addField(new BooleanFieldEditor(AntlrToolPreferenceConstants.P_GENLISTENER,	"Generate parse tree listener (-listener)",	getFieldEditorParent()));
 		addField(new BooleanFieldEditor(AntlrToolPreferenceConstants.P_GENVISITOR,	"Generate parse tree visitors (-visitor)",	getFieldEditorParent()));
-		addField(new BooleanFieldEditor(AntlrToolPreferenceConstants.P_DELETEGEN,	"Delete generated files when clean build is triggered",	getFieldEditorParent()));
+		addField(new BooleanFieldEditor(AntlrToolPreferenceConstants.P_CLEANUPDERIVED,	"Delete generated files when clean build is triggered",	getFieldEditorParent()));
 		addField(new BooleanFieldEditor(AntlrToolPreferenceConstants.P_MARKDERIVED,	"Mark generated files as derived",	getFieldEditorParent()));
 		addField(new StringFieldEditor(AntlrToolPreferenceConstants.P_ENCODING, "Encoding (-encoding)", getFieldEditorParent()));
 		
@@ -99,8 +99,6 @@ public class AntlrToolPreferencePage extends FieldEditorPreferencePage implement
 			fd.setText("Select Antlr tool jar");
 			
 			String toolJarName=fd.open();
-			
-			// TODO open Manifest and extract tool version
 
 			StringBuffer out=new StringBuffer();
 			boolean isOk=verifyTooljar(toolJarName,out);
@@ -112,8 +110,6 @@ public class AntlrToolPreferencePage extends FieldEditorPreferencePage implement
 
 		@Override
 		protected String[] parseString(String stringList) {
-//			Exception ex=new Exception();
-//			ex.printStackTrace();
 			return stringList.split(del);
 		}
 		
