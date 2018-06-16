@@ -63,7 +63,7 @@ class Antlr4Validator extends AbstractAntlr4Validator {
       "DEFAULT_TOKEN_CHANNEL")
 
   /** Lexer commands without argument */
-  public static val NO_ARG_COMMANDS = newHashSet("skip", "more", "popMode")
+  public static val NO_ARG_COMMANDS = newHashSet("skip", "more", "popMode", "readNext")
 
   /** Lexer commands with argument */
   public static val COMMANDS = newHashSet("type", "channel", "mode", "pushMode")
